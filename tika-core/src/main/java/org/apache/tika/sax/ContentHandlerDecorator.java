@@ -167,17 +167,55 @@ public class ContentHandlerDecorator extends DefaultHandler {
         return handler.toString();
     }
 
+     @Override
+    public void warning (SAXParseException exception)
+        throws SAXException
+    {
+    	if (handler instanceof ContentHandlerDecorator) {
+            ((ContentHandlerDecorator)handler).warning(exception);
+        } else {
+            throw exception;
+        }
+    }
+    
+    @Override
+    public void error (SAXParseException exception)
+        throws SAXException
+    {
+    	if (handler instanceof ContentHandlerDecorator) {
+            ((ContentHandlerDecorator)handler).error(exception);
+        } else {
+            throw exception;
+        }
+    }
+    
+    @Override
+    public void fatalError (SAXParseException exception)
+    		throws SAXException
+    {
+    	if (handler instanceof ContentHandlerDecorator) {
+    		((ContentHandlerDecorator)handler).fatalError(exception);
+    	} else {
+    		throw exception;
+    	}
+    }
+
     /**
      * Handle any exceptions thrown by methods in this class. This method
      * provides a single place to implement custom exception handling. The
      * default behaviour is simply to re-throw the given exception, but
      * subclasses can also provide alternative ways of handling the situation.
-     *
+     * If the wrapped handler is itself a ContentHandlerDecorator, the call
+     * is delegated to the wrapped handler's {@link ContentHandlerDecorator#handleException(SAXException)}
      * @param exception the exception that was thrown
      * @throws SAXException the exception (if any) thrown to the client
      */
     protected void handleException(SAXException exception) throws SAXException {
-        throw exception;
+    	if (handler instanceof ContentHandlerDecorator) {
+            ((ContentHandlerDecorator)handler).handleException(exception);
+        } else {
+            throw exception;
+        }
     }
-
+    
 }
